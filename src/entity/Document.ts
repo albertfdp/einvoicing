@@ -20,6 +20,7 @@ import Payment from '../valueObject/Payment';
 import AllowanceCharge from '../valueObject/AllowanceCharge';
 import Tax from './Tax';
 import AbstractRuleset from '../ruleset/AbstractRuleset';
+import Identifier from '../valueObject/Identifier';
 
 export default class Document extends Entity<IDocument, string, DocumentId> {
   protected _ruleset: AbstractRuleset;
@@ -178,8 +179,22 @@ export default class Document extends Entity<IDocument, string, DocumentId> {
   /**
    * Set the purchase order reference.
    */
-  set purchaseOrderReference(value: string | undefined) {
+  set purchaseOrderReference(value: Identifier | undefined) {
     this.props.purchaseOrderReference = value;
+  }
+
+  /**
+   * Get the originator document reference.
+   */
+  get originatorDocumentReference() {
+    return this.props.originatorDocumentReference;
+  }
+
+  /**
+   * Set the originator document reference.
+   */
+  set originatorDocumentReference(value: Identifier | undefined) {
+    this.props.originatorDocumentReference = value;
   }
 
   /**
@@ -220,7 +235,7 @@ export default class Document extends Entity<IDocument, string, DocumentId> {
   /**
    * Set the contract reference.
    */
-  set contractReference(value: string | undefined) {
+  set contractReference(value: Identifier | undefined) {
     this.props.contractReference = value;
   }
 
@@ -460,6 +475,20 @@ export default class Document extends Entity<IDocument, string, DocumentId> {
    */
   set taxCurrency(value: CurrencyCode | undefined) {
     this.props.taxCurrency = value;
+  }
+
+  /**
+   * Get the xml namespaces.
+   */
+  get xmlNamespaces() {
+    return this.props.xmlNamespaces;
+  }
+
+  /**
+   * Set the xml namespaces.
+   */
+  set xmlNamespaces(value: { [key: string]: string } | undefined) {
+    this.props.xmlNamespaces = value;
   }
 
   toPrimitive() {

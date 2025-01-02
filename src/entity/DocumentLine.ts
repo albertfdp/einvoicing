@@ -12,6 +12,8 @@ import Identifier from '../valueObject/Identifier';
 import Attribute from '../valueObject/Attribute';
 import AllowanceCharge from '../valueObject/AllowanceCharge';
 import DateOnly from '../valueObject/DateOnly';
+import ListIdentifier from '../valueObject/ListIdentifier';
+import Quantity from '../valueObject/Quantity';
 
 export default class DocumentLine extends Entity<
   IDocumentLine,
@@ -88,7 +90,7 @@ export default class DocumentLine extends Entity<
   /**
    * Set the order line reference.
    */
-  set orderLineReference(value: string | undefined) {
+  set orderLineReference(value: Identifier | undefined) {
     this.props.orderLineReference = value;
   }
 
@@ -186,7 +188,7 @@ export default class DocumentLine extends Entity<
   /**
    * Set the seller identifier.
    */
-  set sellerIdentifier(value: string | undefined) {
+  set sellerIdentifier(value: Identifier | undefined) {
     this.props.sellerIdentifier = value;
   }
 
@@ -200,7 +202,7 @@ export default class DocumentLine extends Entity<
   /**
    * Set the standard identifier.
    */
-  set standardIdentifier(value: string | undefined) {
+  set standardIdentifier(value: Identifier | undefined) {
     this.props.standardIdentifier = value;
   }
 
@@ -228,7 +230,9 @@ export default class DocumentLine extends Entity<
   /**
    * Set the classification identifiers.
    */
-  set classificationIdentifiers(value: Identifier[] | undefined) {
+  set classificationIdentifiers(
+    value: Identifier[] | ListIdentifier[] | undefined,
+  ) {
     this.props.classificationIdentifiers = value;
   }
 
@@ -270,7 +274,7 @@ export default class DocumentLine extends Entity<
   /**
    * Set the base quantity.
    */
-  set baseQuantity(value: number | undefined) {
+  set baseQuantity(value: Quantity | undefined) {
     this.props.baseQuantity = value;
   }
 

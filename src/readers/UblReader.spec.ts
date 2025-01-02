@@ -19,6 +19,10 @@ import Attachment from '../valueObject/Attachment';
 import BinaryObject from '../valueObject/BinaryObject';
 import InvoiceReference from '../valueObject/InvoiceReference';
 import Payee from '../valueObject/Payee';
+import ListIdentifier from '../valueObject/ListIdentifier';
+import Contact from '../valueObject/Contact';
+import TaxRegistration from '../valueObject/TaxRegistration';
+import Quantity from '../valueObject/Quantity';
 
 describe('UblReader', () => {
   let ublReader: UblReader;
@@ -61,11 +65,14 @@ describe('UblReader', () => {
           transfer: PaymentTransfer.create({ account: '1234567891234' }),
         }),
         buyer: Party.create({
-          additionalIdentifiers: ['87654321'],
-          companyId: '87654321',
-          contactName: 'n/a',
-          endpointId: '87654321',
+          additionalIdentifiers: [
+            Identifier.create({ id: '87654321', scheme: '0184' }),
+          ],
+          companyId: Identifier.create({ id: '87654321', scheme: '0184' }),
+          contact: Contact.create({ name: 'n/a' }),
+          endpointId: Identifier.create({ id: '87654321', scheme: '0184' }),
           tradingName: 'Company B',
+          legalName: 'Company B',
           address: Address.create({
             addressLines: ['Bjerkåsholmen 125'],
             streetName: 'Bjerkåsholmen 125',
@@ -73,13 +80,21 @@ describe('UblReader', () => {
             postalZone: 'NO-3470',
             countryCode: 'DK',
           }),
-          vatNumber: 'DK87654321',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'DK87654321' }),
+            }),
+          ],
         }),
+        purchaseOrderReference: Identifier.create({ id: 'n/a' }),
         seller: Party.create({
-          additionalIdentifiers: ['12345678'],
-          companyId: '12345678',
-          endpointId: '12345678',
+          additionalIdentifiers: [
+            Identifier.create({ id: '12345678', scheme: '0184' }),
+          ],
+          companyId: Identifier.create({ id: '12345678', scheme: '0184' }),
+          endpointId: Identifier.create({ id: '12345678', scheme: '0184' }),
           tradingName: 'Company A',
+          legalName: 'Company A',
           address: Address.create({
             addressLines: ['Street'],
             streetName: 'Street',
@@ -87,11 +102,25 @@ describe('UblReader', () => {
             postalZone: '1057',
             countryCode: 'DK',
           }),
-          vatNumber: 'DK12345678',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'DK12345678' }),
+            }),
+          ],
+        }),
+        contractReference: Identifier.create({
+          id: '12345',
         }),
         taxes: [vat],
         delivery: Delivery.create({
           date: DateOnly.create('2019-01-25'),
+          address: Address.create({
+            cityName: 'Copenhagen',
+            countryCode: 'DK',
+            postalZone: '1057',
+            streetName: 'Street',
+            addressLines: ['Street'],
+          }),
         }),
         lines: [
           DocumentLine.create({
@@ -103,13 +132,20 @@ describe('UblReader', () => {
             periodEnd: DateOnly.create('2018-09-30'),
             name: 'text',
             description: 'text',
-            sellerIdentifier: '12345',
+            sellerIdentifier: Identifier.create({ id: '12345' }),
             originCountryCode: 'DK',
             price: 625743.54,
             netAmount: -625743.54,
             tax: vat,
           }),
         ],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
     test('bis3_invoice_positive.xml', async () => {
@@ -141,11 +177,14 @@ describe('UblReader', () => {
           transfer: PaymentTransfer.create({ account: '1234567891234' }),
         }),
         buyer: Party.create({
-          additionalIdentifiers: ['87654321'],
-          companyId: '87654321',
-          contactName: 'n/a',
-          endpointId: '87654321',
+          additionalIdentifiers: [
+            Identifier.create({ id: '87654321', scheme: '0184' }),
+          ],
+          companyId: Identifier.create({ id: '87654321', scheme: '0184' }),
+          contact: Contact.create({ name: 'n/a' }),
+          endpointId: Identifier.create({ id: '87654321', scheme: '0184' }),
           tradingName: 'Company B',
+          legalName: 'Company B',
           address: Address.create({
             addressLines: ['Bjerkåsholmen 125'],
             streetName: 'Bjerkåsholmen 125',
@@ -153,13 +192,21 @@ describe('UblReader', () => {
             postalZone: 'NO-3470',
             countryCode: 'DK',
           }),
-          vatNumber: 'DK87654321',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'DK87654321' }),
+            }),
+          ],
         }),
+        purchaseOrderReference: Identifier.create({ id: 'n/a' }),
         seller: Party.create({
-          additionalIdentifiers: ['12345678'],
-          companyId: '12345678',
-          endpointId: '12345678',
+          additionalIdentifiers: [
+            Identifier.create({ id: '12345678', scheme: '0184' }),
+          ],
+          companyId: Identifier.create({ id: '12345678', scheme: '0184' }),
+          endpointId: Identifier.create({ id: '12345678', scheme: '0184' }),
           tradingName: 'Company A',
+          legalName: 'Company A',
           address: Address.create({
             addressLines: ['Street'],
             streetName: 'Street',
@@ -167,11 +214,25 @@ describe('UblReader', () => {
             postalZone: '1057',
             countryCode: 'DK',
           }),
-          vatNumber: 'DK12345678',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'DK12345678' }),
+            }),
+          ],
+        }),
+        contractReference: Identifier.create({
+          id: '12345',
         }),
         taxes: [vat],
         delivery: Delivery.create({
           date: DateOnly.create('2019-01-25'),
+          address: Address.create({
+            cityName: 'Copenhagen',
+            countryCode: 'DK',
+            postalZone: '1057',
+            streetName: 'Street',
+            addressLines: ['Street'],
+          }),
         }),
         lines: [
           DocumentLine.create({
@@ -183,13 +244,20 @@ describe('UblReader', () => {
             periodEnd: DateOnly.create('2018-09-30'),
             name: 'text',
             description: 'text',
-            sellerIdentifier: '12345',
+            sellerIdentifier: Identifier.create({ id: '12345' }),
             originCountryCode: 'DK',
             price: 625743.54,
             netAmount: 625743.54,
             tax: vat,
           }),
         ],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
     test('ft_g2g_td01_con_allegato_bonifico_e_split_payment.xml', async () => {
@@ -221,12 +289,18 @@ describe('UblReader', () => {
           terms: 'D.LGS. 231/2002 S.M.I',
           transfer: PaymentTransfer.create({
             account: 'IT64W0100003245243300306301',
+            provider: Identifier.create({ id: 'UNCRIT2B' }),
           }),
         }),
         buyer: Party.create({
-          endpointId: 'UFLCTZ',
+          endpointId: Identifier.create({ id: 'UFLCTZ', scheme: '0201' }),
           tradingName: 'AZIENDA USL DI MODENA',
-          vatNumber: 'IT02241850367',
+          legalName: 'AZIENDA AUSL DI MODENA',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'IT02241850367' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['VIA SAN GIOVANNI DEL CANTONE 23'],
             cityName: 'MODENA',
@@ -239,9 +313,14 @@ describe('UblReader', () => {
         buyerReference: '110#2020-02-05#ABCDEF',
         currency: CurrencyCode.create('EUR'),
         seller: Party.create({
-          endpointId: 'UF6WX8',
+          endpointId: Identifier.create({ id: 'UF6WX8', scheme: '0201' }),
           tradingName: 'Azienda Unita Sanitaria Locale di Reggio Emilia',
-          vatNumber: 'IT01598570354',
+          legalName: 'Azienda Unita Sanitaria Locale di Reggio Emilia',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'IT01598570354' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Via Amendola,2'],
             cityName: 'REGGIO EMILIA',
@@ -260,13 +339,30 @@ describe('UblReader', () => {
             netAmount: 1246,
             price: 62.3,
             quantity: 20,
-            sellerIdentifier: '689910',
+            sellerIdentifier: Identifier.create({ id: '689910' }),
             unitCode: 'C62',
             tax: vat,
           }),
         ],
         notes: 'Scissione Pagamenti',
         paidAmount: 274.12,
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+          'xmlns:ccts': 'urn:un:unece:uncefact:documentation:2',
+          'xmlns:cr': 'http://www.ubl-italia.org/ns/CrossReference',
+          'xmlns:ext':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2',
+          'xmlns:qdt':
+            'urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2',
+          'xmlns:udt':
+            'urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2',
+          'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
+          'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+        },
       });
     });
     test('guide-example1.xml', async () => {
@@ -295,8 +391,9 @@ describe('UblReader', () => {
         type: DocumentType.create('380'),
         payment: Payment.create({}),
         buyer: Party.create({
-          additionalIdentifiers: ['10202'],
-          contactName: 'Dhr. J BLOKKER',
+          additionalIdentifiers: [Identifier.create({ id: '10202' })],
+          contact: Contact.create({ name: 'Dhr. J BLOKKER' }),
+          legalName: 'ODIN 59',
           address: Address.create({
             addressLines: ['POSTBUS 367'],
             cityName: 'HEEMSKERK',
@@ -309,8 +406,13 @@ describe('UblReader', () => {
           "Alle leveringen zijn franco. Alle prijzen zijn incl. BTW. Betalingstermijn: 14 dagen netto. Prijswijzigingen voorbehouden. Op al onze aanbiedingen, leveringen en overeenkomsten zijn van toepassing in de algemene verkoop en leveringsvoorwaarden. Gedeponeerd bij de K.v.K. te Amsterdam 25-04-'85##Delivery terms",
         currency: CurrencyCode.create('EUR'),
         seller: Party.create({
-          companyId: '57151520',
-          vatNumber: 'NL8200.98.395.B.01',
+          companyId: Identifier.create({ id: '57151520' }),
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'NL8200.98.395.B.01' }),
+            }),
+          ],
+          legalName: 'De Koksmaat',
           address: Address.create({
             addressLines: ['Postbus 7l'],
             cityName: 'Velsen-Noord',
@@ -327,7 +429,7 @@ describe('UblReader', () => {
             netAmount: 19.9,
             price: 9.95,
             quantity: 2,
-            sellerIdentifier: '166022',
+            sellerIdentifier: Identifier.create({ id: '166022' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -337,7 +439,7 @@ describe('UblReader', () => {
             netAmount: 9.85,
             price: 9.85,
             quantity: 1,
-            sellerIdentifier: '661813',
+            sellerIdentifier: Identifier.create({ id: '661813' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -347,7 +449,7 @@ describe('UblReader', () => {
             netAmount: 8.29,
             price: 8.29,
             quantity: 1,
-            sellerIdentifier: '438146',
+            sellerIdentifier: Identifier.create({ id: '438146' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -357,7 +459,7 @@ describe('UblReader', () => {
             netAmount: 14.46,
             price: 7.23,
             quantity: 2,
-            sellerIdentifier: '438103',
+            sellerIdentifier: Identifier.create({ id: '438103' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -367,7 +469,7 @@ describe('UblReader', () => {
             netAmount: 35,
             price: 35,
             quantity: 1,
-            sellerIdentifier: '666955',
+            sellerIdentifier: Identifier.create({ id: '666955' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -377,7 +479,7 @@ describe('UblReader', () => {
             netAmount: 35,
             price: 35,
             quantity: 1,
-            sellerIdentifier: '664871',
+            sellerIdentifier: Identifier.create({ id: '664871' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -387,7 +489,7 @@ describe('UblReader', () => {
             netAmount: 10.65,
             price: 10.65,
             quantity: 1,
-            sellerIdentifier: '350257',
+            sellerIdentifier: Identifier.create({ id: '350257' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -397,7 +499,7 @@ describe('UblReader', () => {
             netAmount: 1.55,
             price: 1.55,
             quantity: 1,
-            sellerIdentifier: '350258',
+            sellerIdentifier: Identifier.create({ id: '350258' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -407,7 +509,7 @@ describe('UblReader', () => {
             netAmount: 14.37,
             price: 4.79,
             quantity: 3,
-            sellerIdentifier: '999998',
+            sellerIdentifier: Identifier.create({ id: '999998' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -417,7 +519,7 @@ describe('UblReader', () => {
             netAmount: 8.29,
             price: 8.29,
             quantity: 1,
-            sellerIdentifier: '740810',
+            sellerIdentifier: Identifier.create({ id: '740810' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -427,7 +529,7 @@ describe('UblReader', () => {
             netAmount: 16.58,
             price: 8.29,
             quantity: 2,
-            sellerIdentifier: '740829',
+            sellerIdentifier: Identifier.create({ id: '740829' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -437,7 +539,7 @@ describe('UblReader', () => {
             netAmount: 9.95,
             price: 9.95,
             quantity: 1,
-            sellerIdentifier: '740828',
+            sellerIdentifier: Identifier.create({ id: '740828' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -447,7 +549,7 @@ describe('UblReader', () => {
             netAmount: 3.3,
             price: 1.65,
             quantity: 2,
-            sellerIdentifier: '740827',
+            sellerIdentifier: Identifier.create({ id: '740827' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -457,7 +559,7 @@ describe('UblReader', () => {
             netAmount: 10.8,
             price: 10.8,
             quantity: 1,
-            sellerIdentifier: '999996',
+            sellerIdentifier: Identifier.create({ id: '999996' }),
             tax: tax2,
             unitCode: 'EA',
           }),
@@ -467,7 +569,7 @@ describe('UblReader', () => {
             netAmount: 3.9,
             price: 3.9,
             quantity: 1,
-            sellerIdentifier: '999995',
+            sellerIdentifier: Identifier.create({ id: '999995' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -477,7 +579,7 @@ describe('UblReader', () => {
             netAmount: 7.6,
             price: 3.8,
             quantity: 2,
-            sellerIdentifier: '102172',
+            sellerIdentifier: Identifier.create({ id: '102172' }),
             tax: tax2,
             unitCode: 'EA',
           }),
@@ -487,7 +589,7 @@ describe('UblReader', () => {
             netAmount: 9.34,
             price: 4.67,
             quantity: 2,
-            sellerIdentifier: '999994',
+            sellerIdentifier: Identifier.create({ id: '999994' }),
             tax: tax2,
             unitCode: 'EA',
           }),
@@ -497,7 +599,7 @@ describe('UblReader', () => {
             netAmount: 18.63,
             price: 18.63,
             quantity: 1,
-            sellerIdentifier: '999993',
+            sellerIdentifier: Identifier.create({ id: '999993' }),
             tax: tax2,
             unitCode: 'EA',
           }),
@@ -507,7 +609,7 @@ describe('UblReader', () => {
             netAmount: 102.12,
             price: 17.02,
             quantity: 6,
-            sellerIdentifier: '999992',
+            sellerIdentifier: Identifier.create({ id: '999992' }),
             tax: tax,
             unitCode: 'EA',
           }),
@@ -517,11 +619,23 @@ describe('UblReader', () => {
             netAmount: -109.98,
             price: 18.33,
             quantity: 6,
-            sellerIdentifier: '175137',
+            sellerIdentifier: Identifier.create({ id: '175137' }),
             tax: tax,
             unitCode: 'EA',
           }),
         ],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+          'xmlns:ccts': 'urn:un:unece:uncefact:documentation:2',
+          'xmlns:qdt':
+            'urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2',
+          'xmlns:udt':
+            'urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2',
+        },
       });
     });
     test('guide-example2.xml', async () => {
@@ -545,6 +659,7 @@ describe('UblReader', () => {
       const tax3 = Tax.create({
         id: new TaxId('E', 0),
         currency: CurrencyCode.create('NOK'),
+        percent: 0,
         taxAmount: 0,
         taxExemptionReason: 'Exempt New Means of Transport',
         taxableAmount: -25,
@@ -555,11 +670,11 @@ describe('UblReader', () => {
           Attachment.create({
             description: 'Timesheet',
             externalUri: 'http://www.suppliersite.eu/sheet001.html',
-            id: 'Doc1',
+            id: Identifier.create({ id: 'Doc1' }),
           }),
           Attachment.create({
             description: 'EHF specification',
-            id: 'Doc2',
+            id: Identifier.create({ id: 'Doc2' }),
           }),
         ],
         id: new DocumentId('TOSL108'),
@@ -574,9 +689,26 @@ describe('UblReader', () => {
           meansCode: '30',
           terms:
             '2 % discount if paid within 2 days Penalty percentage 10% from due date',
-          transfer: PaymentTransfer.create({ account: 'NO9386011117947' }),
+          transfer: PaymentTransfer.create({
+            account: 'NO9386011117947',
+            provider: Identifier.create({ id: 'DNBANOKK' }),
+          }),
         }),
-        delivery: Delivery.create({ date: DateOnly.create('2013-06-15') }),
+        delivery: Delivery.create({
+          date: DateOnly.create('2013-06-15'),
+          locationId: Identifier.create({
+            id: '6754238987643',
+            scheme: '0088',
+          }),
+          address: Address.create({
+            cityName: 'DeliveryCity',
+            countryCode: 'NO',
+            postalZone: '523427',
+            streetName: 'Deliverystreet 2',
+            addressLines: ['Deliverystreet 2', 'Side door'],
+            subdivision: 'RegionD',
+          }),
+        }),
         notes: 'Ordered in our booth at the convention',
         paidAmount: 1000,
         payee: Payee.create({
@@ -585,12 +717,21 @@ describe('UblReader', () => {
           name: 'Ebeneser Scrooge AS',
         }),
         buyer: Party.create({
-          additionalIdentifiers: ['3456789012098'],
-          companyId: '987654321',
-          contactEmail: 'john@buyercompany.no',
-          contactName: 'John Doe',
-          contactPhone: '5121230',
-          vatNumber: 'NO987654321MVA',
+          additionalIdentifiers: [
+            Identifier.create({ id: '3456789012098', scheme: '0088' }),
+          ],
+          companyId: Identifier.create({ id: '987654321', scheme: '0082' }),
+          contact: Contact.create({
+            name: 'John Doe',
+            email: 'john@buyercompany.no',
+            phone: '5121230',
+          }),
+          legalName: 'The Buyercompany',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'NO987654321MVA' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Anystreet 8', 'Back door'],
             cityName: 'Anytown',
@@ -600,14 +741,27 @@ describe('UblReader', () => {
             subdivision: 'RegionB',
           }),
         }),
+        contractReference: Identifier.create({
+          id: 'Contract321',
+        }),
         currency: CurrencyCode.create('NOK'),
+        purchaseOrderReference: Identifier.create({ id: '123' }),
         seller: Party.create({
-          additionalIdentifiers: ['1238764941386'],
-          companyId: '123456789',
-          contactEmail: 'antonio@salescompany.no',
-          contactName: 'Antonio Salesmacher',
-          contactPhone: '46211230',
-          vatNumber: 'NO123456789MVA',
+          additionalIdentifiers: [
+            Identifier.create({ id: '1238764941386', scheme: '0088' }),
+          ],
+          companyId: Identifier.create({ id: '123456789', scheme: '0082' }),
+          contact: Contact.create({
+            name: 'Antonio Salesmacher',
+            email: 'antonio@salescompany.no',
+            phone: '46211230',
+          }),
+          legalName: 'Salescompany ltd.',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'NO123456789MVA' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Main street 34', 'Suite 123'],
             cityName: 'Big city',
@@ -628,7 +782,7 @@ describe('UblReader', () => {
           }),
           AllowanceCharge.create({
             amount: 100,
-            isCharge: false,
+            isCharge: true,
             reasonText: 'Freight',
             tax,
           }),
@@ -638,7 +792,10 @@ describe('UblReader', () => {
           DocumentLine.create({
             id: new DocumentLineId('1'),
             attributes: [Attribute.create({ name: 'Color', value: 'Black' })],
-            baseQuantity: 1,
+            baseQuantity: Quantity.create({
+              value: 1,
+              unitCode: 'EA',
+            }),
             buyerAccountingReference: 'BookingCode001',
             charges: [
               AllowanceCharge.create({
@@ -648,12 +805,12 @@ describe('UblReader', () => {
               }),
               AllowanceCharge.create({
                 amount: 12,
-                isCharge: false,
+                isCharge: true,
                 reasonText: 'Testing',
               }),
             ],
             classificationIdentifiers: [
-              Identifier.create({
+              ListIdentifier.create({
                 id: '65434568',
                 scheme: 'STI',
               }),
@@ -663,23 +820,26 @@ describe('UblReader', () => {
             name: 'Laptop computer',
             netAmount: 1273,
             note: 'Scratch on box',
-            orderLineReference: '1',
+            orderLineReference: Identifier.create({ id: '1' }),
             originCountryCode: 'DE',
             periodStart: DateOnly.create('2013-06-01'),
             periodEnd: DateOnly.create('2013-06-30'),
             price: 1273,
             quantity: 2,
-            sellerIdentifier: 'JB007',
-            standardIdentifier: '1234567890128',
+            sellerIdentifier: Identifier.create({ id: 'JB007' }),
+            standardIdentifier: Identifier.create({
+              id: '1234567890128',
+              scheme: '0088',
+            }),
             tax: tax,
             unitCode: 'EA',
           }),
           DocumentLine.create({
             id: new DocumentLineId('2'),
-            baseQuantity: 1,
+            baseQuantity: Quantity.create({ value: 1, unitCode: 'EA' }),
             buyerAccountingReference: 'BookingCode002',
             classificationIdentifiers: [
-              Identifier.create({
+              ListIdentifier.create({
                 id: '65434567',
                 scheme: 'STI',
               }),
@@ -687,60 +847,69 @@ describe('UblReader', () => {
             name: 'Returned "Advanced computing" book',
             netAmount: -3.96,
             note: 'Cover is slightly damaged.',
-            orderLineReference: '5',
+            orderLineReference: Identifier.create({ id: '5' }),
             price: 3.96,
             quantity: -1,
-            sellerIdentifier: 'JB008',
-            standardIdentifier: '1234567890135',
+            sellerIdentifier: Identifier.create({ id: 'JB008' }),
+            standardIdentifier: Identifier.create({
+              id: '1234567890135',
+              scheme: '0160',
+            }),
             tax: tax2,
             unitCode: 'EA',
           }),
           DocumentLine.create({
             id: new DocumentLineId('3'),
             buyerAccountingReference: 'BookingCode003',
-            baseQuantity: 1,
+            baseQuantity: Quantity.create({ value: 1, unitCode: 'EA' }),
             classificationIdentifiers: [
-              Identifier.create({
+              ListIdentifier.create({
                 id: '65434567',
                 scheme: 'STI',
               }),
             ],
             name: '"Computing for dummies" book',
             netAmount: 4.96,
-            orderLineReference: '3',
+            orderLineReference: Identifier.create({ id: '3' }),
             price: 2.48,
             quantity: 2,
-            sellerIdentifier: 'JB009',
-            standardIdentifier: '1234567890135',
+            sellerIdentifier: Identifier.create({ id: 'JB009' }),
+            standardIdentifier: Identifier.create({
+              id: '1234567890135',
+              scheme: '0160',
+            }),
             tax: tax2,
             unitCode: 'EA',
           }),
           DocumentLine.create({
             id: new DocumentLineId('4'),
             buyerAccountingReference: 'BookingCode004',
-            baseQuantity: 1,
+            baseQuantity: Quantity.create({ value: 1, unitCode: 'EA' }),
             classificationIdentifiers: [
-              Identifier.create({
+              ListIdentifier.create({
                 id: '65434565',
                 scheme: 'STI',
               }),
             ],
             name: 'Returned IBM 5150 desktop',
             netAmount: -25,
-            orderLineReference: '2',
+            orderLineReference: Identifier.create({ id: '2' }),
             price: 25,
             quantity: -1,
-            sellerIdentifier: 'JB010',
-            standardIdentifier: '1234567890159',
+            sellerIdentifier: Identifier.create({ id: 'JB010' }),
+            standardIdentifier: Identifier.create({
+              id: '1234567890159',
+              scheme: '0160',
+            }),
             tax: tax3,
             unitCode: 'EA',
           }),
           DocumentLine.create({
             id: new DocumentLineId('5'),
             attributes: [Attribute.create({ name: 'Type', value: 'Cat5' })],
-            baseQuantity: 1,
+            baseQuantity: Quantity.create({ value: 1, unitCode: 'MTR' }),
             classificationIdentifiers: [
-              Identifier.create({
+              ListIdentifier.create({
                 id: '65434564',
                 scheme: 'STI',
               }),
@@ -750,12 +919,27 @@ describe('UblReader', () => {
             netAmount: 187.5,
             price: 0.75,
             quantity: 250,
-            sellerIdentifier: 'JB011',
-            standardIdentifier: '1234567890166',
+            sellerIdentifier: Identifier.create({ id: 'JB011' }),
+            standardIdentifier: Identifier.create({
+              id: '1234567890166',
+              scheme: '0160',
+            }),
             tax: tax,
             unitCode: 'MTR',
           }),
         ],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+          'xmlns:ccts': 'urn:un:unece:uncefact:documentation:2',
+          'xmlns:qdt':
+            'urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2',
+          'xmlns:udt':
+            'urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2',
+        },
       });
     });
     test('guide-example3.xml', async () => {
@@ -785,13 +969,16 @@ describe('UblReader', () => {
         charges: [
           AllowanceCharge.create({
             amount: 100,
-            isCharge: false,
+            isCharge: true,
             reasonText: 'Freight charge',
             tax,
           }),
         ],
         buyer: Party.create({
-          additionalIdentifiers: ['5790000435975'],
+          additionalIdentifiers: [
+            Identifier.create({ id: '5790000435975', scheme: '0088' }),
+          ],
+          legalName: 'Buyercompany ltd',
           address: Address.create({
             addressLines: ['Anystreet, Building 1'],
             cityName: 'Anytown',
@@ -802,11 +989,19 @@ describe('UblReader', () => {
         }),
         notes: 'Contract was established through our website',
         currency: CurrencyCode.create('DKK'),
+        contractReference: Identifier.create({ id: 'SUBSCR571' }),
         seller: Party.create({
-          additionalIdentifiers: ['1238764941386'],
-          companyId: 'DK16356706',
-          contactEmail: 'antonio@SubscriptionsSeller.dk',
-          vatNumber: 'DK16356706',
+          additionalIdentifiers: [
+            Identifier.create({ id: '1238764941386', scheme: '0088' }),
+          ],
+          companyId: Identifier.create({ id: 'DK16356706' }),
+          contact: Contact.create({ email: 'antonio@SubscriptionsSeller.dk' }),
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'DK16356706' }),
+            }),
+          ],
+          legalName: 'SubscriptionSeller',
           address: Address.create({
             addressLines: ['Main street 2, Building 4'],
             cityName: 'Big city',
@@ -838,6 +1033,18 @@ describe('UblReader', () => {
             unitCode: 'EA',
           }),
         ],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+          'xmlns:ccts': 'urn:un:unece:uncefact:documentation:2',
+          'xmlns:qdt':
+            'urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2',
+          'xmlns:udt':
+            'urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2',
+        },
       });
     });
     test('ubl-invoice-2.0-example.xml', async () => {
@@ -863,6 +1070,7 @@ describe('UblReader', () => {
           transfer: PaymentTransfer.create({
             account: '12345678',
             name: 'Farthing Purchasing Consortium',
+            provider: Identifier.create({ id: '10-26-58' }),
           }),
         }),
         charges: [
@@ -874,13 +1082,17 @@ describe('UblReader', () => {
           }),
         ],
         buyer: Party.create({
-          contactEmail: 'fred@iytcorporation.gov.uk',
-          contactName: 'Mr Fred Churchill',
-          contactPhone: '0127 2653214',
-          taxRegistrationId: {
-            companyId: '12356478',
-            taxScheme: 'UK VAT',
-          },
+          contact: Contact.create({
+            name: 'Mr Fred Churchill',
+            email: 'fred@iytcorporation.gov.uk',
+            phone: '0127 2653214',
+          }),
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: '12356478' }),
+              scheme: 'UK VAT',
+            }),
+          ],
           tradingName: 'IYT Corporation',
           address: Address.create({
             addressLines: ['Avon Way', '56A'],
@@ -892,12 +1104,19 @@ describe('UblReader', () => {
           }),
         }),
         notes: 'sample',
+        purchaseOrderReference: Identifier.create({ id: 'AEG012345' }),
         seller: Party.create({
-          contactEmail: 'bouquet@fpconsortial.co.uk',
-          contactName: 'Mrs Bouquet',
-          contactPhone: '0158 1233714',
+          contact: Contact.create({
+            name: 'Mrs Bouquet',
+            email: 'bouquet@fpconsortial.co.uk',
+            phone: '0158 1233714',
+          }),
           tradingName: 'Consortial',
-          vatNumber: '175 269 2355',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: '175 269 2355' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Busy Street', '56A'],
             cityName: 'Farthing',
@@ -922,18 +1141,25 @@ describe('UblReader', () => {
         lines: [
           DocumentLine.create({
             id: new DocumentLineId('A'),
-            baseQuantity: 1,
+            baseQuantity: Quantity.create({ value: 1, unitCode: 'KGM' }),
             buyerIdentifier: '6578489',
             description: 'Acme beeswax',
             name: 'beeswax',
             netAmount: 100,
-            orderLineReference: '1',
+            orderLineReference: Identifier.create({ id: '1' }),
             price: 1,
             quantity: 100,
-            sellerIdentifier: '17589683',
+            sellerIdentifier: Identifier.create({ id: '17589683' }),
             unitCode: 'KGM',
           }),
         ],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
 
@@ -952,6 +1178,7 @@ describe('UblReader', () => {
       const exemptTax = Tax.create({
         currency: CurrencyCode.create('EUR'),
         id: new TaxId('E', 0),
+        percent: 0,
         taxAmount: 0,
         taxExemptionReason: 'Reason for tax exempt',
         taxableAmount: 1000,
@@ -971,14 +1198,23 @@ describe('UblReader', () => {
         type: DocumentType.create('380'),
         paidAmount: 1000,
         buyer: Party.create({
-          additionalIdentifiers: ['4598375937'],
-          companyId: '39937423947',
-          contactEmail: 'lj@buyer.se',
-          contactName: 'Lisa Johnson',
-          contactPhone: '23434234',
-          endpointId: '4598375937',
+          additionalIdentifiers: [
+            Identifier.create({ id: '4598375937', scheme: '0002' }),
+          ],
+          companyId: Identifier.create({ id: '39937423947', scheme: '0183' }),
+          contact: Contact.create({
+            name: 'Lisa Johnson',
+            email: 'lj@buyer.se',
+            phone: '23434234',
+          }),
+          endpointId: Identifier.create({ id: '4598375937', scheme: '0002' }),
           tradingName: 'BuyerTradingName AS',
-          vatNumber: 'SE4598375937',
+          legalName: 'Buyer Official Name',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'SE4598375937' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Hovedgatan 32', 'Po box 878'],
             cityName: 'Stockholm',
@@ -989,15 +1225,24 @@ describe('UblReader', () => {
           }),
         }),
         seller: Party.create({
-          additionalIdentifiers: ['99887766'],
-          companyId: 'GB983294',
-          endpointId: '7300010000001',
-          taxRegistrationId: {
-            companyId: 'SE555555555501',
-            taxScheme: 'TAX',
-          },
+          additionalIdentifiers: [Identifier.create({ id: '99887766' })],
+          companyId: Identifier.create({ id: 'GB983294' }),
+          endpointId: Identifier.create({
+            id: '7300010000001',
+            scheme: '0088',
+          }),
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'GB1232434' }),
+              scheme: 'VAT',
+            }),
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'SE555555555501' }),
+              scheme: 'TAX',
+            }),
+          ],
           tradingName: 'SupplierTradingName Ltd.',
-          vatNumber: 'GB1232434',
+          legalName: 'SupplierOfficialName Ltd',
           address: Address.create({
             addressLines: ['Main street 1', 'Postbox 123'],
             cityName: 'London',
@@ -1007,7 +1252,20 @@ describe('UblReader', () => {
           }),
         }),
         delivery: Delivery.create({
+          name: 'Delivery party Name',
           date: DateOnly.create('2017-11-01'),
+          address: Address.create({
+            addressLines: ['Delivery street 2', 'Building 56'],
+            cityName: 'Stockholm',
+            countryCode: 'SE',
+            postalZone: '21234',
+            streetName: 'Delivery street 2',
+            subdivision: 'Södermalm',
+          }),
+          locationId: Identifier.create({
+            id: '7300010000001',
+            scheme: '0088',
+          }),
         }),
         payment: Payment.create({
           id: 'Snippet1',
@@ -1017,6 +1275,7 @@ describe('UblReader', () => {
           transfer: PaymentTransfer.create({
             account: 'IBAN32423940',
             name: 'AccountName',
+            provider: Identifier.create({ id: 'BIC324098' }),
           }),
         }),
         charges: [
@@ -1029,8 +1288,9 @@ describe('UblReader', () => {
           }),
           AllowanceCharge.create({
             amount: 1189.8,
+            baseAmount: 5949,
             factorAmount: 20,
-            isCharge: false,
+            isCharge: true,
             reasonCode: 'CG',
             reasonText: 'Cleaning',
             tax: vat,
@@ -1045,10 +1305,10 @@ describe('UblReader', () => {
             name: 'item name',
             note: 'Testing note on line level',
             description: 'Description of item',
-            sellerIdentifier: '97iugug876',
+            sellerIdentifier: Identifier.create({ id: '97iugug876' }),
             originCountryCode: 'NO',
             classificationIdentifiers: [
-              Identifier.create({ id: '9348023', scheme: 'SRV' }),
+              ListIdentifier.create({ id: '09348023', scheme: 'SRV' }),
             ],
             price: 410,
             netAmount: 4040,
@@ -1062,8 +1322,9 @@ describe('UblReader', () => {
               }),
               AllowanceCharge.create({
                 amount: 41,
+                baseAmount: 4100,
                 factorAmount: 1,
-                isCharge: false,
+                isCharge: true,
                 reasonCode: 'CG',
                 reasonText: 'Cleaning',
               }),
@@ -1072,7 +1333,7 @@ describe('UblReader', () => {
           DocumentLine.create({
             id: new DocumentLineId('2'),
             quantity: 10,
-            baseQuantity: 2,
+            baseQuantity: Quantity.create({ value: 2, unitCode: 'C62' }),
             unitCode: 'C62',
             buyerAccountingReference: 'Konteringsstreng',
             periodStart: DateOnly.create('2017-12-01'),
@@ -1080,8 +1341,8 @@ describe('UblReader', () => {
             name: 'item name',
             note: 'Testing note on line level',
             description: 'Description of item',
-            sellerIdentifier: '97iugug876',
-            orderLineReference: '124',
+            sellerIdentifier: Identifier.create({ id: '97iugug876' }),
+            orderLineReference: Identifier.create({ id: '124' }),
             attributes: [
               Attribute.create({
                 name: 'AdditionalItemName',
@@ -1089,7 +1350,7 @@ describe('UblReader', () => {
               }),
             ],
             classificationIdentifiers: [
-              Identifier.create({ id: '86776', scheme: 'SRV' }),
+              ListIdentifier.create({ id: '86776', scheme: 'SRV' }),
             ],
             price: 200,
             netAmount: 1000,
@@ -1111,10 +1372,10 @@ describe('UblReader', () => {
             name: 'item name',
             note: 'Testing note on line level',
             description: 'Description of item',
-            sellerIdentifier: '97iugug876',
-            orderLineReference: '124',
+            sellerIdentifier: Identifier.create({ id: '97iugug876' }),
+            orderLineReference: Identifier.create({ id: '124' }),
             classificationIdentifiers: [
-              Identifier.create({ id: '86776', scheme: 'SRV' }),
+              ListIdentifier.create({ id: '86776', scheme: 'SRV' }),
             ],
             price: 100,
             netAmount: 909,
@@ -1128,8 +1389,9 @@ describe('UblReader', () => {
               }),
               AllowanceCharge.create({
                 amount: 10,
+                baseAmount: 1000,
                 factorAmount: 1,
-                isCharge: false,
+                isCharge: true,
                 reasonCode: 'CG',
                 reasonText: 'Charge',
               }),
@@ -1137,6 +1399,13 @@ describe('UblReader', () => {
           }),
         ],
         taxes: [vat, exemptTax],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
     test('peppol-base.xml', async () => {
@@ -1162,15 +1431,19 @@ describe('UblReader', () => {
           }),
           InvoiceReference.create({ id: 'INV-123' }),
         ],
+        contractReference: Identifier.create({
+          id: '123Contractref',
+        }),
         currency: CurrencyCode.create('EUR'),
         attachments: [
           Attachment.create({
-            id: 'INV-123',
+            documentTypeCode: 130,
+            id: Identifier.create({ id: 'INV-123' }),
           }),
           Attachment.create({
             description: 'A link to an external attachment',
             externalUri: 'https://www.example.com/document.pdf',
-            id: 'ATT-4321',
+            id: Identifier.create({ id: 'ATT-4321' }),
           }),
           Attachment.create({
             content: BinaryObject.create({
@@ -1178,21 +1451,30 @@ describe('UblReader', () => {
               filename: 'ATT-1234.pdf',
               mimeCode: 'application/pdf',
             }),
-            id: 'ATT-1234',
+            id: Identifier.create({ id: 'ATT-1234' }),
           }),
         ],
         buyerReference: '0150abc',
         buyerAccountingReference: '4025:123:4343',
         type: DocumentType.create('380'),
         buyer: Party.create({
-          additionalIdentifiers: ['FR23342'],
-          companyId: '39937423947',
-          contactEmail: 'lj@buyer.se',
-          contactName: 'Lisa Johnson',
-          contactPhone: '23434234',
-          endpointId: 'FR23342',
+          additionalIdentifiers: [
+            Identifier.create({ id: 'FR23342', scheme: '0002' }),
+          ],
+          companyId: Identifier.create({ id: '39937423947', scheme: '0183' }),
+          contact: Contact.create({
+            name: 'Lisa Johnson',
+            email: 'lj@buyer.se',
+            phone: '23434234',
+          }),
+          endpointId: Identifier.create({ id: 'FR23342', scheme: '0002' }),
           tradingName: 'BuyerTradingName AS',
-          vatNumber: 'SE4598375937',
+          legalName: 'Buyer Official Name',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'SE4598375937' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Hovedgatan 32', 'Po box 878'],
             cityName: 'Stockholm',
@@ -1201,12 +1483,21 @@ describe('UblReader', () => {
             streetName: 'Hovedgatan 32',
           }),
         }),
+        purchaseOrderReference: Identifier.create({ id: '854777' }),
         seller: Party.create({
-          additionalIdentifiers: ['99887766'],
-          companyId: 'GB983294',
-          endpointId: '9482348239847239874',
+          additionalIdentifiers: [Identifier.create({ id: '99887766' })],
+          companyId: Identifier.create({ id: 'GB983294' }),
+          endpointId: Identifier.create({
+            id: '9482348239847239874',
+            scheme: '0088',
+          }),
           tradingName: 'SupplierTradingName Ltd.',
-          vatNumber: 'GB1232434',
+          legalName: 'SupplierOfficialName Ltd',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'GB1232434' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Main street 1', 'Postbox 123'],
             cityName: 'London',
@@ -1216,7 +1507,22 @@ describe('UblReader', () => {
           }),
         }),
         delivery: Delivery.create({
+          name: 'Delivery party Name',
           date: DateOnly.create('2017-11-01'),
+          locationId: Identifier.create({
+            id: '9483759475923478',
+            scheme: '0088',
+          }),
+          address: Address.create({
+            addressLines: ['Delivery street 2', 'Building 56'],
+            cityName: 'Stockholm',
+            countryCode: 'SE',
+            postalZone: '21234',
+            streetName: 'Delivery street 2',
+          }),
+        }),
+        originatorDocumentReference: Identifier.create({
+          id: 'PPID-123',
         }),
         payment: Payment.create({
           id: 'Snippet1',
@@ -1226,12 +1532,13 @@ describe('UblReader', () => {
           transfer: PaymentTransfer.create({
             account: 'IBAN32423940',
             name: 'AccountName',
+            provider: Identifier.create({ id: 'BIC324098' }),
           }),
         }),
         charges: [
           AllowanceCharge.create({
             amount: 25,
-            isCharge: false,
+            isCharge: true,
             reasonText: 'Insurance',
             tax: vat,
           }),
@@ -1243,12 +1550,15 @@ describe('UblReader', () => {
             unitCode: 'DAY',
             buyerAccountingReference: 'Konteringsstreng',
             name: 'item name',
-            orderLineReference: '123',
+            orderLineReference: Identifier.create({ id: '123' }),
             description: 'Description of item',
-            standardIdentifier: '21382183120983',
+            standardIdentifier: Identifier.create({
+              id: '21382183120983',
+              scheme: '0088',
+            }),
             originCountryCode: 'NO',
             classificationIdentifiers: [
-              Identifier.create({ id: '9348023', scheme: 'SRV' }),
+              ListIdentifier.create({ id: '09348023', scheme: 'SRV' }),
             ],
             price: 400,
             netAmount: 2800,
@@ -1260,11 +1570,14 @@ describe('UblReader', () => {
             unitCode: 'DAY',
             name: 'item name 2',
             description: 'Description 2',
-            orderLineReference: '123',
+            orderLineReference: Identifier.create({ id: '123' }),
             originCountryCode: 'NO',
-            standardIdentifier: '21382183120983',
+            standardIdentifier: Identifier.create({
+              id: '21382183120983',
+              scheme: '0088',
+            }),
             classificationIdentifiers: [
-              Identifier.create({ id: '9348023', scheme: 'SRV' }),
+              ListIdentifier.create({ id: '09348023', scheme: 'SRV' }),
             ],
             price: 500,
             netAmount: -1500,
@@ -1272,6 +1585,13 @@ describe('UblReader', () => {
           }),
         ],
         taxes: [vat],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
     test('peppol-credit-note.xml', async () => {
@@ -1299,14 +1619,23 @@ describe('UblReader', () => {
         buyerAccountingReference: '4025:123:4343',
         type: DocumentType.create('381'),
         buyer: Party.create({
-          additionalIdentifiers: ['FR23342'],
-          companyId: '39937423947',
-          contactEmail: 'lj@buyer.se',
-          contactName: 'Lisa Johnson',
-          contactPhone: '23434234',
-          endpointId: 'FR23342',
+          additionalIdentifiers: [
+            Identifier.create({ id: 'FR23342', scheme: '0002' }),
+          ],
+          companyId: Identifier.create({ id: '39937423947', scheme: '0183' }),
+          contact: Contact.create({
+            name: 'Lisa Johnson',
+            email: 'lj@buyer.se',
+            phone: '23434234',
+          }),
+          endpointId: Identifier.create({ id: 'FR23342', scheme: '0002' }),
           tradingName: 'BuyerTradingName AS',
-          vatNumber: 'SE4598375937',
+          legalName: 'Buyer Official Name',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'SE4598375937' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Hovedgatan 32', 'Po box 878'],
             cityName: 'Stockholm',
@@ -1316,11 +1645,19 @@ describe('UblReader', () => {
           }),
         }),
         seller: Party.create({
-          additionalIdentifiers: ['99887766'],
-          companyId: 'GB983294',
-          endpointId: '9482348239847239874',
+          additionalIdentifiers: [Identifier.create({ id: '99887766' })],
+          companyId: Identifier.create({ id: 'GB983294' }),
+          endpointId: Identifier.create({
+            id: '9482348239847239874',
+            scheme: '0088',
+          }),
           tradingName: 'SupplierTradingName Ltd.',
-          vatNumber: 'GB1232434',
+          legalName: 'SupplierOfficialName Ltd',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'GB1232434' }),
+            }),
+          ],
           address: Address.create({
             addressLines: ['Main street 1', 'Postbox 123'],
             cityName: 'London',
@@ -1330,7 +1667,19 @@ describe('UblReader', () => {
           }),
         }),
         delivery: Delivery.create({
+          name: 'Delivery party Name',
           date: DateOnly.create('2017-11-01'),
+          locationId: Identifier.create({
+            id: '9483759475923478',
+            scheme: '0088',
+          }),
+          address: Address.create({
+            addressLines: ['Delivery street 2', 'Building 56'],
+            cityName: 'Stockholm',
+            countryCode: 'SE',
+            postalZone: '21234',
+            streetName: 'Delivery street 2',
+          }),
         }),
         payment: Payment.create({
           id: 'Snippet1',
@@ -1340,12 +1689,13 @@ describe('UblReader', () => {
           transfer: PaymentTransfer.create({
             account: 'IBAN32423940',
             name: 'AccountName',
+            provider: Identifier.create({ id: 'BIC324098' }),
           }),
         }),
         charges: [
           AllowanceCharge.create({
             amount: 25,
-            isCharge: false,
+            isCharge: true,
             reasonText: 'Insurance',
             tax: vat,
           }),
@@ -1356,12 +1706,15 @@ describe('UblReader', () => {
             quantity: 7,
             buyerAccountingReference: 'Konteringsstreng',
             name: 'item name',
-            orderLineReference: '123',
+            orderLineReference: Identifier.create({ id: '123' }),
             description: 'Description of item',
-            standardIdentifier: '21382183120983',
+            standardIdentifier: Identifier.create({
+              id: '21382183120983',
+              scheme: '0088',
+            }),
             originCountryCode: 'NO',
             classificationIdentifiers: [
-              Identifier.create({ id: '9348023', scheme: 'SRV' }),
+              ListIdentifier.create({ id: '09348023', scheme: 'SRV' }),
             ],
             price: 400,
             netAmount: 2800,
@@ -1372,11 +1725,14 @@ describe('UblReader', () => {
             quantity: -3,
             name: 'item name 2',
             description: 'Description 2',
-            orderLineReference: '123',
+            orderLineReference: Identifier.create({ id: '123' }),
             originCountryCode: 'NO',
-            standardIdentifier: '21382183120983',
+            standardIdentifier: Identifier.create({
+              id: '21382183120983',
+              scheme: '0088',
+            }),
             classificationIdentifiers: [
-              Identifier.create({ id: '9348023', scheme: 'SRV' }),
+              ListIdentifier.create({ id: '09348023', scheme: 'SRV' }),
             ],
             price: 500,
             netAmount: -1500,
@@ -1384,6 +1740,13 @@ describe('UblReader', () => {
           }),
         ],
         taxes: [vat],
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
     test('peppol-rounding.xml', async () => {
@@ -1408,8 +1771,13 @@ describe('UblReader', () => {
             streetName: 'Strada Zebreiou 432',
             subdivision: 'RO-BC',
           }),
-          companyId: 'RO17364910',
-          taxRegistrationId: { companyId: 'RO17364910' },
+          companyId: Identifier.create({ id: 'RO17364910' }),
+          legalName: 'POP Alexandra SRL',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'RO17364910' }),
+            }),
+          ],
         }),
         currency: CurrencyCode.create('EUR'),
         dueDate: DateOnly.create('2022-11-11'),
@@ -1428,7 +1796,7 @@ describe('UblReader', () => {
         ],
         payment: Payment.create({ meansCode: '31' }),
         seller: Party.create({
-          additionalIdentifiers: ['12345678'],
+          additionalIdentifiers: [Identifier.create({ id: '12345678' })],
           address: Address.create({
             addressLines: ['Yellow Brick Road'],
             cityName: 'Kuki',
@@ -1437,14 +1805,27 @@ describe('UblReader', () => {
             streetName: 'Yellow Brick Road',
             subdivision: 'RO-CJ',
           }),
-          companyId: 'J12/1234/2016',
-          endpointId: 'admin@example.com',
-          taxRegistrationId: {
-            companyId: '12345678',
-          },
+          companyId: Identifier.create({ id: 'J12/1234/2016' }),
+          endpointId: Identifier.create({
+            id: 'admin@example.com',
+            scheme: 'EM',
+          }),
+          legalName: 'Test S.r.o',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: '12345678' }),
+            }),
+          ],
         }),
         taxes: [vat],
         type: DocumentType.create('380'),
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
     test('peppol-vat-o.xml', async () => {
@@ -1469,7 +1850,8 @@ describe('UblReader', () => {
             streetName: 'Anystreet 8',
             subdivision: 'RegionB',
           }),
-          endpointId: '987654325',
+          legalName: 'The Buyercompany',
+          endpointId: Identifier.create({ id: '987654325', scheme: '0192' }),
         }),
         buyerReference: 'test reference',
         currency: CurrencyCode.create('SEK'),
@@ -1481,10 +1863,10 @@ describe('UblReader', () => {
             name: 'Road tax',
             description: 'Weight-based tax, vehicles >3000 KGM',
             netAmount: 3200,
-            orderLineReference: '1',
+            orderLineReference: Identifier.create({ id: '1' }),
             price: 3200,
             quantity: 1,
-            sellerIdentifier: 'RT3000',
+            sellerIdentifier: Identifier.create({ id: 'RT3000' }),
             tax: vat,
             unitCode: 'EA',
           }),
@@ -1492,10 +1874,13 @@ describe('UblReader', () => {
         payment: Payment.create({
           meansCode: '30',
           terms: 'Payment within 30 days',
-          transfer: PaymentTransfer.create({ account: 'SE1212341234123412' }),
+          transfer: PaymentTransfer.create({
+            account: 'SE1212341234123412',
+            provider: Identifier.create({ id: 'SEXDABCD' }),
+          }),
         }),
         seller: Party.create({
-          additionalIdentifiers: ['7300010000001'],
+          additionalIdentifiers: [Identifier.create({ id: '7300010000001' })],
           address: Address.create({
             addressLines: ['Main street 2, Building 4'],
             cityName: 'Big city',
@@ -1503,10 +1888,21 @@ describe('UblReader', () => {
             postalZone: '54321',
             streetName: 'Main street 2, Building 4',
           }),
-          endpointId: '7300010000001',
+          legalName: 'The Sellercompany Incorporated',
+          endpointId: Identifier.create({
+            id: '7300010000001',
+            scheme: '0088',
+          }),
         }),
         taxes: [vat],
         type: DocumentType.create('380'),
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
     test('peppol-vat-s.xml', async () => {
@@ -1530,7 +1926,9 @@ describe('UblReader', () => {
       expect(result.validate()).toEqual({ errors: [], warning: [] });
       expect(result.toPrimitive()).toEqual({
         buyer: Party.create({
-          additionalIdentifiers: ['FR23342'],
+          additionalIdentifiers: [
+            Identifier.create({ id: 'FR23342', scheme: '0002' }),
+          ],
           address: Address.create({
             addressLines: ['Hovedgatan 32', 'Po box 878'],
             cityName: 'Stockholm',
@@ -1538,10 +1936,15 @@ describe('UblReader', () => {
             postalZone: '456 34',
             streetName: 'Hovedgatan 32',
           }),
-          companyId: '39937423947',
-          endpointId: 'FR23342',
+          companyId: Identifier.create({ id: '39937423947', scheme: '0183' }),
+          endpointId: Identifier.create({ id: 'FR23342', scheme: '0002' }),
           tradingName: 'BuyerTradingName AS',
-          vatNumber: 'SE4598375937',
+          legalName: 'Buyer Official Name',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'SE4598375937' }),
+            }),
+          ],
         }),
         buyerAccountingReference: '4025:123:4343',
         buyerReference: '0150abc',
@@ -1554,13 +1957,28 @@ describe('UblReader', () => {
           }),
           AllowanceCharge.create({
             amount: 200,
-            isCharge: false,
+            isCharge: true,
             reasonText: 'Cleaning',
             tax: tax1,
           }),
         ],
         currency: CurrencyCode.create('EUR'),
-        delivery: Delivery.create({ date: DateOnly.create('2017-11-01') }),
+        delivery: Delivery.create({
+          date: DateOnly.create('2017-11-01'),
+          name: 'Delivery party Name',
+          locationId: Identifier.create({
+            id: '7300010000001',
+            scheme: '0088',
+          }),
+          address: Address.create({
+            addressLines: ['Delivery street 2', 'Building 56'],
+            cityName: 'Stockholm',
+            countryCode: 'SE',
+            postalZone: '21234',
+            streetName: 'Delivery street 2',
+            subdivision: 'Södermalm',
+          }),
+        }),
         dueDate: DateOnly.create('2017-12-01'),
         id: new DocumentId('Snippet1'),
         issueDate: DateOnly.create('2017-11-13'),
@@ -1569,15 +1987,15 @@ describe('UblReader', () => {
             id: new DocumentLineId('1'),
             buyerAccountingReference: 'Konteringsstreng',
             classificationIdentifiers: [
-              Identifier.create({
-                id: '9348023',
+              ListIdentifier.create({
+                id: '09348023',
                 scheme: 'SRV',
               }),
             ],
 
             netAmount: 4000,
             note: 'Testing note on line level',
-            orderLineReference: '123',
+            orderLineReference: Identifier.create({ id: '123' }),
             originCountryCode: 'NO',
             description: 'Description of item',
             name: 'item name',
@@ -1585,8 +2003,11 @@ describe('UblReader', () => {
             periodStart: DateOnly.create('2017-12-01'),
             price: 400,
             quantity: 10,
-            sellerIdentifier: '97iugug876',
-            standardIdentifier: '7300010000001',
+            sellerIdentifier: Identifier.create({ id: '97iugug876' }),
+            standardIdentifier: Identifier.create({
+              id: '7300010000001',
+              scheme: '0088',
+            }),
             tax: tax1,
             unitCode: 'C62',
           }),
@@ -1594,7 +2015,7 @@ describe('UblReader', () => {
             id: new DocumentLineId('2'),
             buyerAccountingReference: 'Konteringsstreng',
             classificationIdentifiers: [
-              Identifier.create({
+              ListIdentifier.create({
                 id: '86776',
                 scheme: 'SRV',
               }),
@@ -1604,8 +2025,11 @@ describe('UblReader', () => {
             netAmount: 2000,
             price: 200,
             quantity: 10,
-            sellerIdentifier: '97iugug876',
-            standardIdentifier: '7300010000001',
+            sellerIdentifier: Identifier.create({ id: '97iugug876' }),
+            standardIdentifier: Identifier.create({
+              id: '7300010000001',
+              scheme: '0088',
+            }),
             tax: tax2,
             unitCode: 'C62',
           }),
@@ -1619,7 +2043,7 @@ describe('UblReader', () => {
             ],
             buyerAccountingReference: 'Konteringsstreng',
             classificationIdentifiers: [
-              Identifier.create({
+              ListIdentifier.create({
                 id: '86776',
                 scheme: 'SRV',
               }),
@@ -1629,8 +2053,11 @@ describe('UblReader', () => {
             netAmount: 900,
             price: 90,
             quantity: 10,
-            sellerIdentifier: '97iugug876',
-            standardIdentifier: '873649827489',
+            sellerIdentifier: Identifier.create({ id: '97iugug876' }),
+            standardIdentifier: Identifier.create({
+              id: '873649827489',
+              scheme: '0160',
+            }),
             tax: tax1,
             unitCode: 'C62',
           }),
@@ -1643,10 +2070,11 @@ describe('UblReader', () => {
           transfer: PaymentTransfer.create({
             account: 'IBAN32423940',
             name: 'AccountName',
+            provider: Identifier.create({ id: 'BIC324098' }),
           }),
         }),
         seller: Party.create({
-          additionalIdentifiers: ['99887766'],
+          additionalIdentifiers: [Identifier.create({ id: '99887766' })],
           address: Address.create({
             addressLines: ['Main street 1', 'Postbox 123'],
             cityName: 'London',
@@ -1654,17 +2082,34 @@ describe('UblReader', () => {
             postalZone: 'GB 123 EW',
             streetName: 'Main street 1',
           }),
-          companyId: 'GB983294',
+          companyId: Identifier.create({ id: 'GB983294' }),
           companyLegalForm: 'AdditionalLegalInformation',
-          contactEmail: 'john.doe@foo.bar',
-          contactName: 'John Doe',
-          contactPhone: '9384203984',
-          endpointId: '7300010000001',
+          contact: Contact.create({
+            name: 'John Doe',
+            email: 'john.doe@foo.bar',
+            phone: '9384203984',
+          }),
+          endpointId: Identifier.create({
+            id: '7300010000001',
+            scheme: '0088',
+          }),
           tradingName: 'SupplierTradingName Ltd.',
-          vatNumber: 'GB1232434',
+          legalName: 'SupplierOfficialName Ltd',
+          taxRegistration: [
+            TaxRegistration.create({
+              id: Identifier.create({ id: 'GB1232434' }),
+            }),
+          ],
         }),
         taxes: [tax1, tax2],
         type: DocumentType.create('380'),
+        xmlNamespaces: {
+          xmlns: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+          'xmlns:cac':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+          'xmlns:cbc':
+            'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
+        },
       });
     });
   });

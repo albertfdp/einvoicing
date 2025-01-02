@@ -13,6 +13,7 @@ export interface IAllowanceCharge {
   reasonCode?: string;
   reasonText?: string;
   factorAmount?: number;
+  baseAmount?: number;
   amount?: number;
   tax?: Tax;
 }
@@ -23,6 +24,10 @@ export default class AllowanceCharge extends ValueObject<IAllowanceCharge> {
       throw new Error('Either amount or factorAmount must be provided');
     }
     return new AllowanceCharge(ref);
+  }
+
+  get isPercentage() {
+    return this.props.factorAmount !== undefined;
   }
 
   /**
@@ -79,6 +84,20 @@ export default class AllowanceCharge extends ValueObject<IAllowanceCharge> {
    */
   set factorAmount(value: number | undefined) {
     this.props.factorAmount = value;
+  }
+
+  /**
+   * Get the base amount.
+   */
+  get baseAmount() {
+    return this.props.baseAmount;
+  }
+
+  /**
+   * Set the base amount.
+   */
+  set baseAmount(value: number | undefined) {
+    this.props.baseAmount = value;
   }
 
   /**
